@@ -1,6 +1,7 @@
 import { Options } from '@mikro-orm/core';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { Product } from './src/products/product.entity';
+import { Admin } from './src/admins/admin.entity';
 
 const config: Options = {
   driver: PostgreSqlDriver,
@@ -9,7 +10,7 @@ const config: Options = {
   dbName: process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  entities: [Product],
+  entities: [Product, Admin],
   debug: true,
 };
 
