@@ -19,4 +19,7 @@ export class Admin {
 
   @Property({ nullable: true, type: 'date' })
   last_login?: Date;
+
+  @Property({ type: 'text[]', default: '{}' })
+  roles: string[] = [];
 }

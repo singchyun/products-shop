@@ -1,3 +1,4 @@
+// ...existing code...
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -39,5 +40,9 @@ export class AdminsService {
     const admin = await this.findOne(id);
     const em = this.adminRepo.getEntityManager();
     await em.removeAndFlush(admin);
+  }
+
+  async findByEmailAndEnabled(email: string): Promise<Admin | null> {
+    return this.adminRepo.findOne({ email, enabled: true });
   }
 }

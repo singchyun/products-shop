@@ -13,25 +13,23 @@ Content-Type: application/json
 {
   "name": "Alice Smith",
   "email": "alice.smith@example.com",
-  "password": "securepassword"
+  "password": "securepassword",
+  "roles": ["manager", "editor"]
 }
 
 ### 
 
 ### UPDATE one
-PUT http://localhost:3000/products/2
+PUT http://localhost:3000/admins/2
 Content-Type: application/json
 
 {
-  "price": 18.99,
-  "stock_quantity": 45,
-  "description": "(Revised) A fun and challenging 50-piece puzzle.",
-  "enabled": false
+
 }
 
 ### 
 
 ### DELETE one
-DELETE http://localhost:3000/products/2
+DELETE http://localhost:3000/admins/1
 
 
