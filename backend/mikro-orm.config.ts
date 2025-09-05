@@ -4,11 +4,11 @@ import { Product } from './src/products/product.entity';
 
 const config: Options = {
   driver: PostgreSqlDriver,
-  host: 'localhost',
-  port: 5432,
-  dbName: 'mandai',
-  user: 'mandaiuser',
-  password: 'askides,0p',
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  dbName: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
   entities: [Product],
   debug: true,
 };
