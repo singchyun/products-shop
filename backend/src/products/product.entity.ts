@@ -16,4 +16,7 @@ export class Product {
 
   @Property()
   stock_quantity!: number;
+
+  @Property({ default: true })
+  enabled: boolean = true;
 }

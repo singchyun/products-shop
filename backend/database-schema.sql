@@ -3,6 +3,6 @@ create table "product" (
   "name" varchar(255) not null,
   "description" varchar(1024) null,
   "price" numeric(10,2) not null,
-  "stock_quantity" int not null
+  "stock_quantity" int not null,
+  "enabled" boolean not null default true
 );
-
