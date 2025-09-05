@@ -1,7 +1,12 @@
-###
+### GET all
 GET http://localhost:3000/products
 
+### GET one
+GET http://localhost:3000/products/2
+
 ###
+
+### CREATE new product
 POST http://localhost:3000/products
 Content-Type: application/json
 
@@ -12,7 +17,7 @@ Content-Type: application/json
   "stock_quantity": 78
 }
 
-###
+### CREATE new product
 POST http://localhost:3000/products
 Content-Type: application/json
 
@@ -23,14 +28,22 @@ Content-Type: application/json
   "stock_quantity": 50
 }
 
-###
+### 
 
+### UPDATE one
+PUT http://localhost:3000/products/2
+Content-Type: application/json
 
+{
+  "price": 18.99,
+  "stock_quantity": 45,
+  "description": "(Revised) A fun and challenging 50-piece puzzle.",
+  "enabled": false
+}
 
-###
+### 
 
-
-###
-
+### DELETE one
+DELETE http://localhost:3000/products/2
 
 
