@@ -8,5 +8,6 @@ import { Admin } from './admin.entity';
   imports: [MikroOrmModule.forFeature([Admin])],
   controllers: [AdminsController],
   providers: [AdminsService],
+  exports: [AdminsService],
 })
 export class AdminsModule {}

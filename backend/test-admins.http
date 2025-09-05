@@ -13,7 +13,7 @@ Content-Type: application/json
 {
   "name": "Alice Smith",
   "email": "alice.smith@example.com",
-  "password": "securepassword",
+  "password": "$2b$05$ezk3wclE5SiyhR.i5eSkCOfv7n7br/6PV.3sZwifn.ujwElV4tPbq",
   "roles": ["manager", "editor"]
 }
 

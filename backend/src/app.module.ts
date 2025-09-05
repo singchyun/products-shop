@@ -3,6 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ProductsModule } from './products/products.module';
 import { AdminsModule } from './admins/admins.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/roles.guard';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -12,8 +15,11 @@ import { AppService } from './app.service';
     MikroOrmModule.forRoot(),
     ProductsModule,
     AdminsModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+  ],
 })
 export class AppModule {}
