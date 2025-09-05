@@ -1,0 +1,37 @@
+### GET all
+GET http://localhost:3000/admins
+
+### GET one
+GET http://localhost:3000/admins/1
+
+###
+
+### CREATE new admin
+POST http://localhost:3000/admins
+Content-Type: application/json
+
+{
+  "name": "Alice Smith",
+  "email": "alice.smith@example.com",
+  "password": "securepassword"
+}
+
+### 
+
+### UPDATE one
+PUT http://localhost:3000/products/2
+Content-Type: application/json
+
+{
+  "price": 18.99,
+  "stock_quantity": 45,
+  "description": "(Revised) A fun and challenging 50-piece puzzle.",
+  "enabled": false
+}
+
+### 
+
+### DELETE one
+DELETE http://localhost:3000/products/2
+
+

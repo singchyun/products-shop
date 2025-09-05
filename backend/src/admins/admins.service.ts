@@ -1,36 +1,43 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EntityManager } from '@mikro-orm/core';
+import { EntityRepository } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
 import { Admin } from './admin.entity';
 
 @Injectable()
 export class AdminsService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(
+    @InjectRepository(Admin)
+    private readonly adminRepo: EntityRepository<Admin>,
+  ) {}
 
   async create(data: Omit<Admin, 'id'>): Promise<Admin> {
-    const admin = this.em.create(Admin, data);
-    await this.em.persistAndFlush(admin);
+    const admin = this.adminRepo.create(data);
+    const em = this.adminRepo.getEntityManager();
+    await em.persistAndFlush(admin);
     return admin;
   }
 
   async findAll(): Promise<Admin[]> {
-    return this.em.find(Admin, {});
+    return this.adminRepo.findAll();
   }
 
   async findOne(id: number): Promise<Admin> {
-    const admin = await this.em.findOne(Admin, { id });
+    const admin = await this.adminRepo.findOne({ id });
     if (!admin) throw new NotFoundException('Admin not found');
     return admin;
   }
 
   async update(id: number, data: Partial<Omit<Admin, 'id'>>): Promise<Admin> {
     const admin = await this.findOne(id);
-    this.em.assign(admin, data);
-    await this.em.persistAndFlush(admin);
+    this.adminRepo.assign(admin, data);
+    const em = this.adminRepo.getEntityManager();
+    await em.persistAndFlush(admin);
     return admin;
   }
 
   async remove(id: number): Promise<void> {
     const admin = await this.findOne(id);
-    await this.em.removeAndFlush(admin);
+    const em = this.adminRepo.getEntityManager();
+    await em.removeAndFlush(admin);
   }
 }

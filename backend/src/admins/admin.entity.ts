@@ -11,6 +11,9 @@ export class Admin {
   @Property()
   email!: string;
 
+  @Property()
+  password!: string;
+
   @Property({ default: true })
   enabled: boolean = true;
 

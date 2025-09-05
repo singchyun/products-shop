@@ -1,23 +1,28 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EntityManager } from '@mikro-orm/core';
+import { EntityRepository } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
 import { Product } from './product.entity';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepo: EntityRepository<Product>,
+  ) {}
 
   async create(data: Omit<Product, 'id'>): Promise<Product> {
-    const product = this.em.create(Product, data);
-    await this.em.persistAndFlush(product);
+    const product = this.productRepo.create(data);
+    const em = this.productRepo.getEntityManager();
+    await em.persistAndFlush(product);
     return product;
   }
 
   async findAll(): Promise<Product[]> {
-    return this.em.find(Product, {});
+    return this.productRepo.findAll();
   }
 
   async findOne(id: number): Promise<Product> {
-    const product = await this.em.findOne(Product, { id });
+    const product = await this.productRepo.findOne({ id });
     if (!product) throw new NotFoundException('Product not found');
     return product;
   }
@@ -27,13 +32,15 @@ export class ProductsService {
     data: Partial<Omit<Product, 'id'>>,
   ): Promise<Product> {
     const product = await this.findOne(id);
-    this.em.assign(product, data);
-    await this.em.persistAndFlush(product);
+    this.productRepo.assign(product, data);
+    const em = this.productRepo.getEntityManager();
+    await em.persistAndFlush(product);
     return product;
   }
 
   async remove(id: number): Promise<void> {
     const product = await this.findOne(id);
-    await this.em.removeAndFlush(product);
+    const em = this.productRepo.getEntityManager();
+    await em.removeAndFlush(product);
   }
 }
