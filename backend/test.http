@@ -3,6 +3,15 @@ GET http://localhost:3000/products
 
 
 ###
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+  "name": "Teddy Bear",
+  "description": "A nice cuddly furry friend.",
+  "price": 19.99,
+  "stock_quantity": 78
+}
 
 
 ###
