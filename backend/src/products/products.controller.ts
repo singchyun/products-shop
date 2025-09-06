@@ -57,3 +57,18 @@ export class ProductsController {
     return this.productsService.remove(id);
   }
 }
+
+@Controller('public/products')
+export class ProductsPublicController {
+  constructor(private readonly productsService: ProductsService) {}
+
+  @Get()
+  async findAll(): Promise<Product[]> {
+    return this.productsService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Product> {
+    return this.productsService.findOne(id);
+  }
+}
