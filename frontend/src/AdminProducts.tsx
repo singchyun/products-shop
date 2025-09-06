@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function AdminProducts() {
+  const [showSuccess, setShowSuccess] = useState<null | string>(null);
   const [hasToken, setHasToken] = useState<boolean | null>(null);
   const [products, setProducts] = useState<null | Array<{
     id: number;
@@ -42,6 +43,11 @@ export default function AdminProducts() {
     setError(null);
   }
 
+  function showSuccessModal(message: string) {
+    setShowSuccess(message);
+    setTimeout(() => setShowSuccess(null), 2000);
+  }
+
   async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -53,11 +59,13 @@ export default function AdminProducts() {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProducts((prev) => (prev ? [res.data, ...prev] : [res.data]));
+        showSuccessModal("Product created successfully!");
       } else if (formMode === "edit" && formProduct.id) {
         const res = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/private/products/${formProduct.id}`, formProduct, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProducts((prev) => (prev ? prev.map((p) => (p.id === formProduct.id ? res.data : p)) : prev));
+        showSuccessModal("Product updated successfully!");
       }
       closeForm();
     } catch (err: any) {
@@ -102,7 +110,7 @@ export default function AdminProducts() {
         <h2 style={{ color: "red" }}>Access Denied</h2>
         <p>You must be logged in as admin to view this page.</p>
         <Link to="/admin/login" className="btn btn-primary">
-          Go to Admin Login
+          Login Here
         </Link>
       </div>
     );
@@ -125,6 +133,7 @@ export default function AdminProducts() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProducts((prev) => (prev ? prev.filter((p) => p.id !== id) : prev));
+      showSuccessModal("Product deleted successfully!");
     } catch (err: any) {
       let message = "Unknown error";
       if (err.response && err.response.data && err.response.data.message) {
@@ -138,6 +147,29 @@ export default function AdminProducts() {
 
   return (
     <>
+      {/* Success Modal */}
+      {showSuccess && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.2)",
+            zIndex: 3000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={() => setShowSuccess(null)}
+        >
+          <div style={{ background: "#fff", padding: 32, borderRadius: 8, minWidth: 240, textAlign: "center", boxShadow: "0 2px 16px rgba(0,0,0,0.15)" }}>
+            <div style={{ fontSize: 24, color: "#198754", marginBottom: 12 }}>✔️</div>
+            <div style={{ fontWeight: 500 }}>{showSuccess}</div>
+          </div>
+        </div>
+      )}
       <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2>Products</h2>
@@ -163,22 +195,26 @@ export default function AdminProducts() {
               {products.map((p) => (
                 <tr key={p.id}>
                   <td>{p.id}</td>
-                  <td>{p.name}</td>
+                  <td>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        openEditForm(p);
+                      }}
+                      style={{ textDecoration: "underline", color: "#0d6efd", cursor: "pointer" }}
+                    >
+                      {p.name}
+                    </a>
+                  </td>
                   <td className="d-none d-md-table-cell">{p.description}</td>
                   <td>${p.price.toFixed(2)}</td>
                   <td>{p.stock_quantity}</td>
                   <td>{p.enabled ? "✔️" : "❌"}</td>
                   <td style={{ minWidth: 120 }}>
-                    <p>
-                      <button className="btn btn-primary btn-sm me-2" onClick={() => openEditForm(p)}>
-                        &nbsp;Edit&nbsp;
-                      </button>
-                    </p>
-                    <p>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
-                        Delete
-                      </button>
-                    </p>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
