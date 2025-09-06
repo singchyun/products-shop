@@ -58,7 +58,7 @@ export default function AdminProducts() {
 
   return (
     <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
-      <h2>Admin Products</h2>
+      <h2>Products</h2>
       {error && <div style={{ color: 'red', marginBottom: 16 }}>{error}</div>}
       {products && products.length > 0 ? (
         <table className="table table-bordered table-striped mt-4">
@@ -78,9 +78,9 @@ export default function AdminProducts() {
                 <td>{p.id}</td>
                 <td>{p.name}</td>
                 <td>{p.description}</td>
-                <td>{p.price}</td>
+                <td>${p.price.toFixed(2)}</td>
                 <td>{p.stock_quantity}</td>
-                <td>{p.enabled ? 'Yes' : 'No'}</td>
+                <td>{p.enabled ? '✔️' : '❌'}</td>
               </tr>
             ))}
           </tbody>
