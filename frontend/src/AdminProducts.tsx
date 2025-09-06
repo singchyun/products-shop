@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
+
+type JwtPayload = { email?: string; [key: string]: any };
 
 export default function AdminProducts() {
   const [showSuccess, setShowSuccess] = useState<null | string>(null);
@@ -13,6 +17,8 @@ export default function AdminProducts() {
     stock_quantity: number;
     enabled: boolean;
   }>>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -82,6 +88,16 @@ export default function AdminProducts() {
   useEffect(() => {
     const token = sessionStorage.getItem("access_token");
     setHasToken(!!token);
+    if (token) {
+      try {
+        const decoded = jwtDecode<JwtPayload>(token);
+        setUserEmail(decoded.email || null);
+      } catch {
+        setUserEmail(null);
+      }
+    } else {
+      setUserEmail(null);
+    }
     if (!token) return;
     setLoading(true);
     setError(null);
@@ -103,6 +119,12 @@ export default function AdminProducts() {
       })
       .finally(() => setLoading(false));
   }, []);
+  function handleLogout() {
+    sessionStorage.removeItem("access_token");
+    setUserEmail(null);
+    setHasToken(false);
+    navigate("/admin/login");
+  }
 
   if (hasToken === false) {
     return (
@@ -168,6 +190,13 @@ export default function AdminProducts() {
             <div style={{ fontSize: 24, color: "#198754", marginBottom: 12 }}>✔️</div>
             <div style={{ fontWeight: 500 }}>{showSuccess}</div>
           </div>
+        </div>
+      )}
+      {/* Top-right user info and logout */}
+      {userEmail && (
+        <div style={{ position: "absolute", top: 16, right: 32, textAlign: "right", zIndex: 10 }}>
+          <div style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>Logged in as <span style={{ fontWeight: 500 }}>{userEmail}</span></div>
+          <button className="btn btn-outline-secondary btn-sm" onClick={handleLogout}>Logout</button>
         </div>
       )}
       <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
