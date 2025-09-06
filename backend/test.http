@@ -1,13 +1,15 @@
 ### GET all
-GET http://localhost:3000/products
+GET http://localhost:3000/private/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcxNzM2ODAsImV4cCI6MTc1NzE3NzI4MH0.tyfRi6QtkttqeZQ0MVYkyVadJ-hwOISVcvxu8tFkJbs
 
 ### GET one
-GET http://localhost:3000/products/2
+GET http://localhost:3000/private/products/7
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcxNzM2ODAsImV4cCI6MTc1NzE3NzI4MH0.tyfRi6QtkttqeZQ0MVYkyVadJ-hwOISVcvxu8tFkJbs
 
 ###
 
 ### CREATE new product
-POST http://localhost:3000/products
+POST http://localhost:3000/private/products
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcxNjg5MDgsImV4cCI6MTc1NzE3MjUwOH0.s_VktSuiY9WzF3r88HEOx_OgmY4uCG--vevt21_t3oc
 
@@ -19,7 +21,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiO
 }
 
 ### CREATE new product
-POST http://localhost:3000/products
+POST http://localhost:3000/private/products
 Content-Type: application/json
 
 {
@@ -32,7 +34,7 @@ Content-Type: application/json
 ### 
 
 ### UPDATE one
-PUT http://localhost:3000/products/2
+PUT http://localhost:3000/private/products/2
 Content-Type: application/json
 
 {
@@ -45,7 +47,7 @@ Content-Type: application/json
 ### 
 
 ### DELETE one
-DELETE http://localhost:3000/products/5
+DELETE http://localhost:3000/private/products/5
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcwOTAzNjAsImV4cCI6MTc1NzA5Mzk2MH0.38RW_vdpzaIny5X5cy4wbW4xDBJxIG2I19etwtO_wYU
 

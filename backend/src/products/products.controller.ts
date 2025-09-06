@@ -15,7 +15,7 @@ import { Roles } from '../auth/roles.decorator';
 import { ProductsService } from './products.service';
 import { Product } from './product.entity';
 
-@Controller('products')
+@Controller('private/products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -27,11 +27,15 @@ export class ProductsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   async findAll(): Promise<Product[]> {
     return this.productsService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productsService.findOne(id);
   }
