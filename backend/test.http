@@ -9,13 +9,13 @@ GET http://localhost:3000/products/2
 ### CREATE new product
 POST http://localhost:3000/products
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcwOTAzNjAsImV4cCI6MTc1NzA5Mzk2MH0.38RW_vdpzaIny5X5cy4wbW4xDBJxIG2I19etwtO_wYU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcxNjg5MDgsImV4cCI6MTc1NzE3MjUwOH0.s_VktSuiY9WzF3r88HEOx_OgmY4uCG--vevt21_t3oc
 
 {
-  "name": "Teddy Bear",
-  "description": "A nice cuddly furry friend.",
-  "price": 19.99,
-  "stock_quantity": 78
+  "name": "Swimming Float",
+  "description": "Rubber ducky swimming float for kids.",
+  "price": 12.50,
+  "stock_quantity": 23
 }
 
 ### CREATE new product
