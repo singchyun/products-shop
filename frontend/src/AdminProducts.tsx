@@ -56,6 +56,30 @@ export default function AdminProducts() {
     return null; // or a spinner/loading indicator
   }
 
+  async function handleDelete(id: number) {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    setError(null);
+    const token = sessionStorage.getItem("access_token");
+    if (!token) {
+      setError("Not authenticated");
+      return;
+    }
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/private/products/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setProducts((prev) => prev ? prev.filter((p) => p.id !== id) : prev);
+    } catch (err: any) {
+      let message = "Unknown error";
+      if (err.response && err.response.data && err.response.data.message) {
+        message = err.response.data.message;
+      } else if (err.message) {
+        message = err.message;
+      }
+      setError(message);
+    }
+  }
+
   return (
     <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
       <h2>Products</h2>
@@ -70,6 +94,7 @@ export default function AdminProducts() {
               <th>Price</th>
               <th>Stock</th>
               <th>Enabled</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -81,6 +106,11 @@ export default function AdminProducts() {
                 <td>${p.price.toFixed(2)}</td>
                 <td>{p.stock_quantity}</td>
                 <td>{p.enabled ? '✔️' : '❌'}</td>
+                <td>
+                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
