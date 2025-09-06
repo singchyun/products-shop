@@ -186,7 +186,16 @@ export default function AdminProducts() {
           }}
           onClick={() => setShowSuccess(null)}
         >
-          <div style={{ background: "#fff", padding: 32, borderRadius: 8, minWidth: 240, textAlign: "center", boxShadow: "0 2px 16px rgba(0,0,0,0.15)" }}>
+          <div
+            style={{
+              background: "#fff",
+              padding: 32,
+              borderRadius: 8,
+              minWidth: 240,
+              textAlign: "center",
+              boxShadow: "0 2px 16px rgba(0,0,0,0.15)",
+            }}
+          >
             <div style={{ fontSize: 24, color: "#198754", marginBottom: 12 }}>✔️</div>
             <div style={{ fontWeight: 500 }}>{showSuccess}</div>
           </div>
@@ -195,8 +204,12 @@ export default function AdminProducts() {
       {/* Top-right user info and logout */}
       {userEmail && (
         <div style={{ position: "absolute", top: 16, right: 32, textAlign: "right", zIndex: 10 }}>
-          <div style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>Logged in as <span style={{ fontWeight: 500 }}>{userEmail}</span></div>
-          <button className="btn btn-outline-secondary btn-sm" onClick={handleLogout}>Logout</button>
+          <div style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
+            Logged in as <span style={{ fontWeight: 500 }}>{userEmail}</span>
+          </div>
+          <button className="btn btn-outline-secondary btn-sm" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       )}
       <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
