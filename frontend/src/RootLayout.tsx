@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import AdminLogin from "./AdminLogin";
+import AdminProducts from "./AdminProducts";
 
 export default function RootLayout() {
   return (
@@ -10,6 +11,7 @@ export default function RootLayout() {
           <Routes>
             <Route path="/" element={<App />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
           </Routes>
         </div>
         <footer
@@ -17,7 +19,7 @@ export default function RootLayout() {
             fontSize: "0.8em",
             color: "#888",
             textAlign: "center",
-            margin: "2rem 0 1rem 0",
+            margin: "1rem 0 1rem 0",
           }}
         >
           API Base URL: {import.meta.env.VITE_API_BASE_URL}
