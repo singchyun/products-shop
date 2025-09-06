@@ -34,8 +34,9 @@ Content-Type: application/json
 ### 
 
 ### UPDATE one
-PUT http://localhost:3000/private/products/2
+PATCH http://localhost:3000/private/products/8
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcxNzY3NzQsImV4cCI6MTc1NzE4MDM3NH0.0CJVaC4cTsrIk8j2w52i2Ny8KFeVZ0lu0SzYlUtsV0A
 
 {
   "price": 18.99,

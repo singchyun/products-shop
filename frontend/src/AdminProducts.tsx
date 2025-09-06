@@ -1,10 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function AdminProducts() {
-
   const [hasToken, setHasToken] = useState<boolean | null>(null);
   const [products, setProducts] = useState<null | Array<{
     id: number;
@@ -16,6 +14,62 @@ export default function AdminProducts() {
   }>>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [formMode, setFormMode] = useState<"create" | "edit">("create");
+  const [formProduct, setFormProduct] = useState<null | {
+    id?: number;
+    name: string;
+    description: string;
+    price: number;
+    stock_quantity: number;
+    enabled: boolean;
+  }>(null);
+  function openCreateForm() {
+    setFormMode("create");
+    setFormProduct({ name: "", description: "", price: 0, stock_quantity: 0, enabled: true });
+    setShowForm(true);
+  }
+
+  function openEditForm(product: any) {
+    setFormMode("edit");
+    setFormProduct({ ...product });
+    setShowForm(true);
+  }
+
+  function closeForm() {
+    setShowForm(false);
+    setFormProduct(null);
+    setError(null);
+  }
+
+  async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    const token = sessionStorage.getItem("access_token");
+    if (!token || !formProduct) return;
+    try {
+      if (formMode === "create") {
+        const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/private/products`, formProduct, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProducts((prev) => (prev ? [res.data, ...prev] : [res.data]));
+      } else if (formMode === "edit" && formProduct.id) {
+        const res = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/private/products/${formProduct.id}`, formProduct, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProducts((prev) => (prev ? prev.map((p) => (p.id === formProduct.id ? res.data : p)) : prev));
+      }
+      closeForm();
+    } catch (err: any) {
+      let message = "Unknown error";
+      if (err.response && err.response.data && err.response.data.message) {
+        message = err.response.data.message;
+      } else if (err.message) {
+        message = err.message;
+      }
+      setError(message);
+    }
+  }
 
   useEffect(() => {
     const token = sessionStorage.getItem("access_token");
@@ -45,9 +99,11 @@ export default function AdminProducts() {
   if (hasToken === false) {
     return (
       <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
-        <h2 style={{ color: 'red' }}>Access Denied</h2>
+        <h2 style={{ color: "red" }}>Access Denied</h2>
         <p>You must be logged in as admin to view this page.</p>
-        <Link to="/admin/login" className="btn btn-primary">Go to Admin Login</Link>
+        <Link to="/admin/login" className="btn btn-primary">
+          Go to Admin Login
+        </Link>
       </div>
     );
   }
@@ -57,7 +113,7 @@ export default function AdminProducts() {
   }
 
   async function handleDelete(id: number) {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
     setError(null);
     const token = sessionStorage.getItem("access_token");
     if (!token) {
@@ -68,7 +124,7 @@ export default function AdminProducts() {
       await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/private/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setProducts((prev) => prev ? prev.filter((p) => p.id !== id) : prev);
+      setProducts((prev) => (prev ? prev.filter((p) => p.id !== id) : prev));
     } catch (err: any) {
       let message = "Unknown error";
       if (err.response && err.response.data && err.response.data.message) {
@@ -81,43 +137,141 @@ export default function AdminProducts() {
   }
 
   return (
-    <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
-      <h2>Products</h2>
-      {error && <div style={{ color: 'red', marginBottom: 16 }}>{error}</div>}
-      {products && products.length > 0 ? (
-        <table className="table table-bordered table-striped mt-4">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Enabled</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id}>
-                <td>{p.id}</td>
-                <td>{p.name}</td>
-                <td>{p.description}</td>
-                <td>${p.price.toFixed(2)}</td>
-                <td>{p.stock_quantity}</td>
-                <td>{p.enabled ? '✔️' : '❌'}</td>
-                <td>
-                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
-                    Delete
-                  </button>
-                </td>
+    <>
+      <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2>Products</h2>
+          <button className="btn btn-success" onClick={openCreateForm}>
+            Create Product
+          </button>
+        </div>
+        {error && <div style={{ color: "red", marginBottom: 16 }}>{error}</div>}
+        {products && products.length > 0 ? (
+          <table className="table table-bordered table-striped mt-4">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th className="d-none d-md-table-cell">Description</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Enabled</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : !error && (
-        <p>No products found.</p>
+            </thead>
+            <tbody>
+              {products.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.id}</td>
+                  <td>{p.name}</td>
+                  <td className="d-none d-md-table-cell">{p.description}</td>
+                  <td>${p.price.toFixed(2)}</td>
+                  <td>{p.stock_quantity}</td>
+                  <td>{p.enabled ? "✔️" : "❌"}</td>
+                  <td style={{ minWidth: 120 }}>
+                    <p>
+                      <button className="btn btn-primary btn-sm me-2" onClick={() => openEditForm(p)}>
+                        &nbsp;Edit&nbsp;
+                      </button>
+                    </p>
+                    <p>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
+                        Delete
+                      </button>
+                    </p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          !error && <p>No products found.</p>
+        )}
+      </div>
+      {/* Modal Form for Create/Edit */}
+      {showForm && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.3)",
+            zIndex: 2000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div style={{ background: "#fff", padding: 32, borderRadius: 8, minWidth: 320, maxWidth: 400 }}>
+            <h4>{formMode === "create" ? "Create Product" : "Edit Product"}</h4>
+            <form onSubmit={handleFormSubmit}>
+              <div className="mb-3 text-start">
+                <label className="form-label">Name</label>
+                <input
+                  className="form-control"
+                  required
+                  value={formProduct?.name ?? ""}
+                  onChange={(e) => setFormProduct((f) => (f ? { ...f, name: e.target.value } : f))}
+                />
+              </div>
+              <div className="mb-3 text-start">
+                <label className="form-label">Description</label>
+                <textarea
+                  className="form-control"
+                  required
+                  value={formProduct?.description ?? ""}
+                  onChange={(e) => setFormProduct((f) => (f ? { ...f, description: e.target.value } : f))}
+                />
+              </div>
+              <div className="mb-3 text-start">
+                <label className="form-label">Price</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  required
+                  min={0}
+                  step={0.01}
+                  value={formProduct?.price ?? 0}
+                  onChange={(e) => setFormProduct((f) => (f ? { ...f, price: parseFloat(e.target.value) } : f))}
+                />
+              </div>
+              <div className="mb-3 text-start">
+                <label className="form-label">Stock Quantity</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  required
+                  min={0}
+                  value={formProduct?.stock_quantity ?? 0}
+                  onChange={(e) => setFormProduct((f) => (f ? { ...f, stock_quantity: parseInt(e.target.value) } : f))}
+                />
+              </div>
+              <div className="mb-3 text-start">
+                <label className="form-label">Enabled</label>
+                <select
+                  className="form-select"
+                  value={formProduct?.enabled ? "1" : "0"}
+                  onChange={(e) => setFormProduct((f) => (f ? { ...f, enabled: e.target.value === "1" } : f))}
+                >
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+              <div className="d-flex justify-content-end gap-2">
+                <button type="button" className="btn btn-secondary" onClick={closeForm}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  {formMode === "create" ? "Create" : "Save"}
+                </button>
+              </div>
+              {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
+            </form>
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 }
