@@ -28,6 +28,9 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+      <div style={{ position: "fixed", bottom: 8, left: 0, width: "100%", textAlign: "center", fontSize: 12, color: "#888", pointerEvents: "none", zIndex: 9999 }}>
+        API Base URL: {import.meta.env.VITE_API_BASE_URL}
+      </div>
     </>
   );
 }
