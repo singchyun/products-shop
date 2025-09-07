@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import api from "./api";
 import Checkout from "./Checkout";
 import "./App.css";
@@ -32,6 +32,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     api
@@ -103,58 +104,6 @@ function App() {
                   })}
                 </div>
               </main>
-              {/* Sticky Cart Icon */}
-              <button
-                onClick={() => navigate("/checkout")}
-                style={{
-                  position: "fixed",
-                  bottom: 32,
-                  right: 32,
-                  zIndex: 10000,
-                  background: "#fff",
-                  border: "1px solid #ddd",
-                  borderRadius: "50%",
-                  width: 56,
-                  height: 56,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  transition: "box-shadow 0.2s, border-color 0.2s",
-                  boxShadow: cartFlash
-                    ? "0 0 0 6px #51cf66, 0 2px 8px rgba(0,0,0,0.08)"
-                    : "0 2px 8px rgba(0,0,0,0.08)",
-                  borderColor: cartFlash ? "#51cf66" : "#ddd",
-                }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    right: 8,
-                    background: "#dc3545",
-                    color: "#fff",
-                    borderRadius: "50%",
-                    fontSize: 12,
-                    width: 22,
-                    height: 22,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {cartCount}
-                </span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 14H4a.5.5 0 0 1-.491-.408L1.01 2H.5a.5.5 0 0 1-.5-.5zm3.14 4l1.25 6.25A.5.5 0 0 0 4.87 12h7.26a.5.5 0 0 0 .48-.75L12.86 5H3.14zM5 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm7 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
-                </svg>
-              </button>
             </>
           }
         />
@@ -170,6 +119,53 @@ function App() {
           }
         />
       </Routes>
+
+      {/* Sticky Cart Icon: show on all pages except /checkout */}
+      {location.pathname !== "/checkout" && (
+        <button
+          onClick={() => navigate("/checkout")}
+          style={{
+            position: "fixed",
+            bottom: 32,
+            right: 32,
+            zIndex: 10000,
+            background: "#fff",
+            border: "1px solid #ddd",
+            borderRadius: "50%",
+            width: 56,
+            height: 56,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            transition: "box-shadow 0.2s, border-color 0.2s",
+            boxShadow: cartFlash
+              ? "0 0 0 6px #51cf66, 0 2px 8px rgba(0,0,0,0.08)"
+              : "0 2px 8px rgba(0,0,0,0.08)",
+            borderColor: cartFlash ? "#51cf66" : "#ddd",
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              background: "#dc3545",
+              color: "#fff",
+              borderRadius: "50%",
+              fontSize: 12,
+              width: 22,
+              height: 22,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {cartCount}
+          </span>
+          <span style={{ fontSize: 28, lineHeight: 1 }} role="img" aria-label="cart">🧺</span>
+        </button>
+      )}
       <div
         style={{
           textAlign: "center",
