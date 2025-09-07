@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import api from "./api";
 import "./App.css";
 
 type Product = {
@@ -20,17 +18,24 @@ type CheckoutProps = {
   onBack: () => void;
 };
 
-export default function Checkout({ products, cart, setCart, onBack }: CheckoutProps) {
+export default function Checkout({
+  products,
+  cart,
+  setCart,
+  onBack,
+}: CheckoutProps) {
   const cartItems = products.filter((p) => cart[p.id]);
   const total = cartItems.reduce(
     (sum, p) => sum + (cart[p.id] || 0) * p.price,
-    0
+    0,
   );
 
   return (
     <main className="container-lg py-4">
       <h3>Shopping Cart</h3>
-      <button className="btn btn-link mb-3" onClick={onBack}>&larr; Back to Shop</button>
+      <button className="btn btn-link mb-3" onClick={onBack}>
+        &larr; Back to Shop
+      </button>
       {cartItems.length === 0 ? (
         <div>Your cart is empty.</div>
       ) : (
@@ -54,7 +59,13 @@ export default function Checkout({ products, cart, setCart, onBack }: CheckoutPr
                         <img
                           src={imgSrc}
                           alt={p.name}
-                          style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 6, marginBottom: 4 }}
+                          style={{
+                            width: 48,
+                            height: 48,
+                            objectFit: "cover",
+                            borderRadius: 6,
+                            marginBottom: 4,
+                          }}
                         />
                       )}
                       <div>{p.name}</div>
@@ -79,12 +90,17 @@ export default function Checkout({ products, cart, setCart, onBack }: CheckoutPr
                       >
                         -
                       </button>
-                      <span style={{ minWidth: 24, textAlign: "center" }}>{cart[p.id]}</span>
+                      <span style={{ minWidth: 24, textAlign: "center" }}>
+                        {cart[p.id]}
+                      </span>
                       <button
                         className="btn btn-sm btn-outline-secondary px-2"
                         style={{ minWidth: 28 }}
                         onClick={() => {
-                          setCart((prev) => ({ ...prev, [p.id]: (prev[p.id] || 0) + 1 }));
+                          setCart((prev) => ({
+                            ...prev,
+                            [p.id]: (prev[p.id] || 0) + 1,
+                          }));
                         }}
                         aria-label="Increase quantity"
                       >
@@ -100,7 +116,9 @@ export default function Checkout({ products, cart, setCart, onBack }: CheckoutPr
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={3} className="text-end fw-bold">Total</td>
+              <td colSpan={3} className="text-end fw-bold">
+                Total
+              </td>
               <td className="fw-bold">${total.toFixed(2)}</td>
             </tr>
           </tfoot>
