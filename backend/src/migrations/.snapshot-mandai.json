@@ -115,6 +115,17 @@
           "length": 255,
           "mappedType": "string"
         },
+        "image_url": {
+          "name": "image_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "default": "'https://myshopproductsimages.s3.ap-southeast-1.amazonaws.com/image-not-found.webp'",
+          "mappedType": "string"
+        },
         "description": {
           "name": "description",
           "type": "varchar(1024)",

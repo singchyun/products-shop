@@ -7,6 +7,7 @@ import axios from "axios";
 type JwtPayload = { email?: string; [key: string]: any };
 
 export default function AdminProducts() {
+  const [showImageModal, setShowImageModal] = useState<{ url: string; alt: string } | null>(null);
   const [showSuccess, setShowSuccess] = useState<null | string>(null);
   const [hasToken, setHasToken] = useState<boolean | null>(null);
   const [products, setProducts] = useState<null | Array<{
@@ -16,6 +17,7 @@ export default function AdminProducts() {
     price: number;
     stock_quantity: number;
     enabled: boolean;
+    image_url?: string;
   }>>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -106,6 +108,7 @@ export default function AdminProducts() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
+        console.log(`Fetched products: ${JSON.stringify(res.data)}`);
         setProducts(res.data);
       })
       .catch((err) => {
@@ -225,6 +228,7 @@ export default function AdminProducts() {
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Image</th>
                 <th>Name</th>
                 <th className="d-none d-md-table-cell">Description</th>
                 <th>Price</th>
@@ -237,6 +241,55 @@ export default function AdminProducts() {
               {products.map((p) => (
                 <tr key={p.id}>
                   <td>{p.id}</td>
+                  <td>
+                    {p.image_url ? (
+                      <a
+                        href="#"
+                        onClick={e => {
+                          e.preventDefault();
+                          setShowImageModal({ url: p.image_url!, alt: p.name });
+                        }}
+                        tabIndex={0}
+                        aria-label={`View image for ${p.name}`}
+                      >
+                        <img src={p.image_url} alt={p.name} style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 4, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }} />
+                      </a>
+                    ) : (
+                      <div style={{ width: 48, height: 48, background: "#eee", borderRadius: 4 }} />
+                    )}
+                  </td>
+      {/* Image Modal */}
+      {showImageModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.7)",
+            zIndex: 4000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={() => setShowImageModal(null)}
+        >
+          <img
+            src={showImageModal.url}
+            alt={showImageModal.alt}
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '80vh',
+              borderRadius: 8,
+              background: '#fff',
+              boxShadow: '0 2px 24px rgba(0,0,0,0.25)',
+              padding: 8,
+            }}
+            onClick={e => e.stopPropagation()}
+          />
+        </div>
+      )}
                   <td>
                     <a
                       href="#"

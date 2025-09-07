@@ -1,10 +1,12 @@
+@jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcyMDczMDYsImV4cCI6MTc1NzIxODEwNn0.9-2J27zhnD4Vwq3iRnPKAqzU23XWa9KKmfAMWws0wEw
+
 ### Private GET all
 GET http://localhost:3000/private/products
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcxNzY3NzQsImV4cCI6MTc1NzE4MDM3NH0.0CJVaC4cTsrIk8j2w52i2Ny8KFeVZ0lu0SzYlUtsV0A
+Authorization: Bearer {{jwt}}
 
 ### GET one
 GET http://localhost:3000/private/products/7
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhbGljZS5zbWl0aEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIm1hbmFnZXIiLCJlZGl0b3IiLCJhZG1pbiJdLCJpYXQiOjE3NTcxNzM2ODAsImV4cCI6MTc1NzE3NzI4MH0.tyfRi6QtkttqeZQ0MVYkyVadJ-hwOISVcvxu8tFkJbs
+Authorization: Bearer {{jwt}}
 
 ###
 
