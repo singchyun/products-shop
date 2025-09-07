@@ -1,5 +1,4 @@
 import {
-  Controller,
   Get,
   Post,
   Put,
@@ -15,7 +14,14 @@ import { Roles } from '../auth/roles.decorator';
 import { AdminsService } from './admins.service';
 import { Admin } from './admin.entity';
 
-@Controller('admins')
+/**
+ * Controller for managing admin users.
+ * All routes must be protected by JWT authentication and role-based access control.
+ *
+ * The Controller decorator is intentionally commented out to prevent automatic route registration.
+ * Uncomment it when we are ready to manage admin accounts on the web.
+ */
+// @Controller('admins')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminsController {

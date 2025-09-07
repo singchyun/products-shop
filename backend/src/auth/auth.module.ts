@@ -16,7 +16,7 @@ import { LocalAuthGuard } from './local-auth.guard';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET', 'changeme'),
         signOptions: { expiresIn: '3h' },
       }),

@@ -8,6 +8,7 @@ export class Product {
   @Property()
   name!: string;
 
+  /** Product image URL, with a cute placeholder image. */
   @Property({
     default:
       'https://myshopproductsimages.s3.ap-southeast-1.amazonaws.com/image-not-found.webp',
@@ -23,6 +24,7 @@ export class Product {
   @Property()
   stock_quantity!: number;
 
+  /** A quick and easy flag to enable or disable the product from the shopfront. */
   @Property({ default: true })
   enabled!: boolean;
 }

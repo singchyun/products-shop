@@ -21,7 +21,9 @@ export class RolesGuard implements CanActivate {
       this.logger.debug('No required roles set, allowing access.');
       return true;
     }
-    const { user } = context.switchToHttp().getRequest();
+    const { user } = context
+      .switchToHttp()
+      .getRequest<{ user: { roles: string[] } }>();
     this.logger.debug(`User: ${JSON.stringify(user)}`);
     this.logger.debug(`Required roles: ${JSON.stringify(requiredRoles)}`);
     const hasRole =
