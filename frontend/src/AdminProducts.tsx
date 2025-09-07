@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
+import ImageModal from "./ImageModal";
+import ProductFormModal from "./ProductFormModal";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios, { isAxiosError } from "axios";
 
-type JwtPayload = { email?: string };
-
 export default function AdminProducts() {
-  const [search, setSearch] = useState("");
   const [showImageModal, setShowImageModal] = useState<{ url: string; alt: string } | null>(null);
   const [showSuccess, setShowSuccess] = useState<null | string>(null);
   const [hasToken, setHasToken] = useState<boolean | null>(null);
@@ -35,6 +34,43 @@ export default function AdminProducts() {
     enabled: boolean;
     image_url?: string;
   }>(null);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("access_token");
+    setHasToken(!!token);
+    if (token) {
+      try {
+        const decoded = jwtDecode<{ email?: string }>(token);
+        setUserEmail(decoded.email || null);
+      } catch {
+        setUserEmail(null);
+      }
+    } else {
+      setUserEmail(null);
+    }
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+    axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/private/products`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setProducts(res.data);
+      })
+      .catch((err) => {
+        let message = "Unknown error";
+        if (err.response && err.response.data && err.response.data.message) {
+          message = err.response.data.message;
+        } else if (err.message) {
+          message = err.message;
+        }
+        setError(message);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   function openCreateForm() {
     setFormMode("create");
     setFormProduct({ name: "", description: "", price: 0, stock_quantity: 0, enabled: true });
@@ -98,62 +134,11 @@ export default function AdminProducts() {
     }
   }
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("access_token");
-    setHasToken(!!token);
-    if (token) {
-      try {
-        const decoded = jwtDecode<JwtPayload>(token);
-        setUserEmail(decoded.email || null);
-      } catch {
-        setUserEmail(null);
-      }
-    } else {
-      setUserEmail(null);
-    }
-    if (!token) return;
-    setLoading(true);
-    setError(null);
-    axios
-      .get(`${import.meta.env.VITE_API_BASE_URL}/private/products`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        console.log(`Fetched products: ${JSON.stringify(res.data)}`);
-        setProducts(res.data);
-      })
-      .catch((err) => {
-        let message = "Unknown error";
-        if (err.response && err.response.data && err.response.data.message) {
-          message = err.response.data.message;
-        } else if (err.message) {
-          message = err.message;
-        }
-        setError(message);
-      })
-      .finally(() => setLoading(false));
-  }, []);
   function handleLogout() {
     sessionStorage.removeItem("access_token");
     setUserEmail(null);
     setHasToken(false);
     navigate("/admin/login");
-  }
-
-  if (hasToken === false) {
-    return (
-      <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
-        <h2 style={{ color: "red" }}>Access Denied</h2>
-        <p>You must be logged in as admin to view this page.</p>
-        <Link to="/admin/login" className="btn btn-primary">
-          Login Here
-        </Link>
-      </div>
-    );
-  }
-
-  if (hasToken === null || loading) {
-    return null; // or a spinner/loading indicator
   }
 
   async function handleDelete(id: number) {
@@ -182,40 +167,26 @@ export default function AdminProducts() {
     }
   }
 
+  if (hasToken === false) {
+    return (
+      <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
+        <h2 style={{ color: "red" }}>Access Denied</h2>
+        <p>You must be logged in as admin to view this page.</p>
+        <Link to="/admin/login" className="btn btn-primary">
+          Login Here
+        </Link>
+      </div>
+    );
+  }
+
+  if (hasToken === null || loading) {
+    return null; // or a spinner/loading indicator
+  }
+
   return (
     <>
       {/* Success Modal */}
-      {showSuccess && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.2)",
-            zIndex: 3000,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={() => setShowSuccess(null)}
-        >
-          <div
-            style={{
-              background: "#fff",
-              padding: 32,
-              borderRadius: 8,
-              minWidth: 240,
-              textAlign: "center",
-              boxShadow: "0 2px 16px rgba(0,0,0,0.15)",
-            }}
-          >
-            <div style={{ fontSize: 24, color: "#198754", marginBottom: 12 }}>✔️</div>
-            <div style={{ fontWeight: 500 }}>{showSuccess}</div>
-          </div>
-        </div>
-      )}
+      {showImageModal && <ImageModal url={showImageModal.url} alt={showImageModal.alt} onClose={() => setShowImageModal(null)} />}
       {/* Top-right user info and logout */}
       {userEmail && (
         <div style={{ position: "absolute", top: 16, right: 32, textAlign: "right", zIndex: 10 }}>
@@ -236,13 +207,13 @@ export default function AdminProducts() {
         </div>
         {error && <div style={{ color: "red", marginBottom: 16 }}>{error}</div>}
         {/* Quick Search Field */}
-  <div style={{ maxWidth: 340, margin: '16px 0 0 0', position: 'relative', textAlign: 'left' }}>
+        <div style={{ maxWidth: 340, margin: "16px 0 0 0", position: "relative", textAlign: "left" }}>
           <input
             type="text"
             className="form-control"
             placeholder="Quick search by name or description..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             style={{ paddingRight: 32 }}
           />
           {search && (
@@ -250,17 +221,17 @@ export default function AdminProducts() {
               type="button"
               onClick={() => setSearch("")}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 right: 8,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                border: 'none',
-                background: 'transparent',
+                top: "50%",
+                transform: "translateY(-50%)",
+                border: "none",
+                background: "transparent",
                 fontSize: 18,
-                color: '#888',
-                cursor: 'pointer',
+                color: "#888",
+                cursor: "pointer",
                 padding: 0,
-                lineHeight: 1
+                lineHeight: 1,
               }}
               aria-label="Clear search"
             >
@@ -284,64 +255,63 @@ export default function AdminProducts() {
             </thead>
             <tbody>
               {products
-                .filter(p =>
-                  search.trim() === "" ||
-                  p.name.toLowerCase().includes(search.toLowerCase()) ||
-                  p.description.toLowerCase().includes(search.toLowerCase())
+                .filter(
+                  (p) =>
+                    search.trim() === "" ||
+                    p.name.toLowerCase().includes(search.toLowerCase()) ||
+                    p.description.toLowerCase().includes(search.toLowerCase()),
                 )
                 .map((p) => (
-                <tr key={p.id}>
-                  <td>{p.id}</td>
-                  <td style={{ textAlign: 'left' }}>
-                    {p.image_url ? (
+                  <tr key={p.id}>
+                    <td>{p.id}</td>
+                    <td style={{ textAlign: "left" }}>
+                      {p.image_url ? (
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowImageModal({ url: p.image_url!, alt: p.name });
+                          }}
+                          tabIndex={0}
+                          aria-label={`View image for ${p.name}`}
+                        >
+                          <img
+                            src={p.image_url}
+                            alt={p.name}
+                            style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+                          />
+                        </a>
+                      ) : (
+                        <div style={{ width: 48, height: 48, background: "#eee", borderRadius: 4 }} />
+                      )}
+                    </td>
+                    <td>
                       <a
                         href="#"
                         onClick={(e) => {
                           e.preventDefault();
-                          setShowImageModal({ url: p.image_url!, alt: p.name });
+                          openEditForm(p);
                         }}
-                        tabIndex={0}
-                        aria-label={`View image for ${p.name}`}
+                        style={{ textDecoration: "underline", color: "#0d6efd", cursor: "pointer" }}
                       >
-                        <img
-                          src={p.image_url}
-                          alt={p.name}
-                          style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
-                        />
+                        {p.name}
                       </a>
-                    ) : (
-                      <div style={{ width: 48, height: 48, background: "#eee", borderRadius: 4 }} />
-                    )}
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        openEditForm(p);
-                      }}
-                      style={{ textDecoration: "underline", color: "#0d6efd", cursor: "pointer" }}
-                    >
-                      {p.name}
-                    </a>
-                  </td>
-                  <td className="d-none d-md-table-cell" style={{ textAlign: 'left' }}>{p.description}</td>
-                  <td style={{ textAlign: 'right' }}>${p.price.toFixed(2)}</td>
-                  <td style={{ textAlign: 'right' }}>
-                    {p.stock_quantity < 50 ? (
-                      <span className="text-danger">{p.stock_quantity} (low)</span>
-                    ) : (
-                      p.stock_quantity
-                    )}
-                  </td>
-                  <td>{p.enabled ? "✔️" : "❌"}</td>
-                  <td style={{ minWidth: 120 }}>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="d-none d-md-table-cell" style={{ textAlign: "left" }}>
+                      {p.description}
+                    </td>
+                    <td style={{ textAlign: "right" }}>${p.price.toFixed(2)}</td>
+                    <td style={{ textAlign: "right" }}>
+                      {p.stock_quantity < 50 ? <span className="text-danger">{p.stock_quantity} (low)</span> : p.stock_quantity}
+                    </td>
+                    <td>{p.enabled ? "✔️" : "❌"}</td>
+                    <td style={{ minWidth: 120 }}>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         ) : (
@@ -380,118 +350,15 @@ export default function AdminProducts() {
           </div>
         )}
       </div>
-      {/* Modal Form for Create/Edit */}
-      {showForm && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.3)",
-            zIndex: 2000,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "auto",
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              padding: 32,
-              borderRadius: 8,
-              minWidth: 320,
-              maxWidth: 400,
-              maxHeight: "90vh",
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <h4>{formMode === "create" ? "Create Product" : "Edit Product"}</h4>
-            <form onSubmit={handleFormSubmit}>
-              <div className="mb-3 text-start">
-                <label className="form-label">Name</label>
-                <input
-                  className="form-control"
-                  required
-                  value={formProduct?.name ?? ""}
-                  onChange={(e) => setFormProduct((f) => (f ? { ...f, name: e.target.value } : f))}
-                />
-              </div>
-              <div className="mb-3 text-start">
-                <label className="form-label">Description</label>
-                <textarea
-                  className="form-control"
-                  required
-                  value={formProduct?.description ?? ""}
-                  onChange={(e) => setFormProduct((f) => (f ? { ...f, description: e.target.value } : f))}
-                />
-              </div>
-              <div className="mb-3 text-start">
-                <label className="form-label">Price (in SGD)</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  required
-                  min={0}
-                  step={0.01}
-                  value={formProduct?.price ?? 0}
-                  onChange={(e) => setFormProduct((f) => (f ? { ...f, price: parseFloat(e.target.value) } : f))}
-                />
-              </div>
-              <div className="mb-3 text-start">
-                <label className="form-label">Stock Quantity</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  required
-                  min={0}
-                  value={formProduct?.stock_quantity ?? 0}
-                  onChange={(e) => setFormProduct((f) => (f ? { ...f, stock_quantity: parseInt(e.target.value) } : f))}
-                />
-              </div>
-              <div className="mb-3 text-start">
-                <label className="form-label">
-                  Image URL <span style={{ fontWeight: 400, color: "#888", fontSize: 12 }}>(optional)</span>
-                </label>
-                <input
-                  className="form-control"
-                  type="url"
-                  placeholder=""
-                  value={formProduct?.image_url ?? ""}
-                  onChange={(e) => setFormProduct((f) => (f ? { ...f, image_url: e.target.value } : f))}
-                />
-              </div>
-              <div className="mb-3 text-start">
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="enabledCheckbox"
-                    checked={!!formProduct?.enabled}
-                    onChange={(e) => setFormProduct((f) => (f ? { ...f, enabled: e.target.checked } : f))}
-                  />
-                  <label className="form-check-label" htmlFor="enabledCheckbox">
-                    Enabled on shop front
-                  </label>
-                </div>
-              </div>
-              <div className="d-flex justify-content-end gap-2">
-                <button type="button" className="btn btn-secondary" onClick={closeForm}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  {formMode === "create" ? "Create" : "Save"}
-                </button>
-              </div>
-              {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
-            </form>
-          </div>
-        </div>
-      )}
+      <ProductFormModal
+        show={showForm}
+        mode={formMode}
+        product={formProduct}
+        error={error}
+        onChange={(p) => setFormProduct(p)}
+        onSubmit={handleFormSubmit}
+        onClose={closeForm}
+      />
     </>
   );
 }
