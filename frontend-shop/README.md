@@ -21,7 +21,7 @@ You should already have the backend up and running. If not, please go back to [S
 3. Edit [./.env.development](./.env.development) to verify the backend base URL is correct (usally `http://localhost:3000`).
 4. Run `npm install`
 5. (optional) Edit [./package.json](./package.json) to change the default running port `1192`.
-6. Run `npm run start`
+6. Run `npm run dev`
 7. In your browser, browse to [http://localhost:1192](http://localhost:1192)
    - You should be able see the shopfront listing of products.
 
