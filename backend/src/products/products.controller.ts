@@ -16,7 +16,7 @@ import { ProductsService } from './products.service';
 import { Product } from './product.entity';
 
 /**
- * Private controller to manage products. This controller is protected by JWT authentication
+ * PRIVATE controller to manage products. This controller is protected by JWT authentication
  * and role-based access control, allowing only users with the 'admin' role to perform
  * create, read, update, and delete operations on products.
  */
@@ -56,7 +56,7 @@ export class ProductsController {
 }
 
 /**
- * Public controller to allow unauthenticated access to product listings
+ * PUBLIC controller to allow unauthenticated access to product listings
  * and details. This controller does not require any authentication or roles.
  */
 @Controller('public/products')
