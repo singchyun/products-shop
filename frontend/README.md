@@ -21,7 +21,7 @@ You should already have the backend up and running. If not, please go back to [S
 3. Edit [./.env.development](./.env.development) to verify the backend base URL is correct (usally `http://localhost:3000`).
 4. Run `npm install`
 5. (optional) Edit [./package.json](./package.json) to change the default running port `4168`.
-6. Run `npm run start`
+6. Run `npm run dev`
 7. In your browser, browse to [http://localhost:4168](http://localhost:4168)
    - You should be able to follow the link to login using the email **someone@acme.com**. The password would have made available in page 7 of the slides. If not, please feel free to ask for it from lee@yireh.sg.
 
