@@ -17,7 +17,7 @@ You should already have the backend up and running. If not, please go back to [S
 ## Installation
 
 1. Clone this Github repo locally (which should have been done when installing the backend).
-2. `cd frontend`
+2. `cd frontend-shop`
 3. Edit [./.env.development](./.env.development) to verify the backend base URL is correct (usally `http://localhost:3000`).
 4. Run `npm install`
 5. (optional) Edit [./package.json](./package.json) to change the default running port `1192`.
