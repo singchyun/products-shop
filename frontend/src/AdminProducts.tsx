@@ -359,7 +359,7 @@ export default function AdminProducts() {
                 />
               </div>
               <div className="mb-3 text-start">
-                <label className="form-label">Price</label>
+                <label className="form-label">Price (in SGD)</label>
                 <input
                   type="number"
                   className="form-control"
@@ -386,13 +386,12 @@ export default function AdminProducts() {
                 <input
                   className="form-control"
                   type="url"
-                  placeholder="https://example.com/image.jpg"
+                  placeholder=""
                   value={formProduct?.image_url ?? ""}
                   onChange={e => setFormProduct(f => f ? { ...f, image_url: e.target.value } : f)}
                 />
               </div>
               <div className="mb-3 text-start">
-                <label className="form-label">Enabled</label>
                 <div className="form-check">
                   <input
                     className="form-check-input"
@@ -402,7 +401,7 @@ export default function AdminProducts() {
                     onChange={e => setFormProduct(f => f ? { ...f, enabled: e.target.checked } : f)}
                   />
                   <label className="form-check-label" htmlFor="enabledCheckbox">
-                    Enabled
+                    Enabled on shop front
                   </label>
                 </div>
               </div>
