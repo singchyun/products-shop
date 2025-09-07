@@ -16,10 +16,11 @@ type Cart = { [id: string]: number };
 type CheckoutProps = {
   products: Product[];
   cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
   onBack: () => void;
 };
 
-export default function Checkout({ products, cart, onBack }: CheckoutProps) {
+export default function Checkout({ products, cart, setCart, onBack }: CheckoutProps) {
   const cartItems = products.filter((p) => cart[p.id]);
   const total = cartItems.reduce(
     (sum, p) => sum + (cart[p.id] || 0) * p.price,
@@ -59,7 +60,38 @@ export default function Checkout({ products, cart, onBack }: CheckoutProps) {
                       <div>{p.name}</div>
                     </div>
                   </td>
-                  <td>{cart[p.id]}</td>
+                  <td>
+                    <div className="d-flex align-items-center gap-2">
+                      <button
+                        className="btn btn-sm btn-outline-secondary px-2"
+                        style={{ minWidth: 28 }}
+                        onClick={() => {
+                          setCart((prev) => {
+                            const qty = (prev[p.id] || 0) - 1;
+                            if (qty <= 0) {
+                              const { [p.id]: _, ...rest } = prev;
+                              return rest;
+                            }
+                            return { ...prev, [p.id]: qty };
+                          });
+                        }}
+                        aria-label="Decrease quantity"
+                      >
+                        -
+                      </button>
+                      <span style={{ minWidth: 24, textAlign: "center" }}>{cart[p.id]}</span>
+                      <button
+                        className="btn btn-sm btn-outline-secondary px-2"
+                        style={{ minWidth: 28 }}
+                        onClick={() => {
+                          setCart((prev) => ({ ...prev, [p.id]: (prev[p.id] || 0) + 1 }));
+                        }}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </td>
                   <td>${p.price.toFixed(2)}</td>
                   <td>${((cart[p.id] || 0) * p.price).toFixed(2)}</td>
                 </tr>
