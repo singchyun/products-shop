@@ -17,7 +17,20 @@ type Product = {
 
 function App() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [cart, setCart] = useState<{ [id: string]: number }>({});
+  const [cart, setCart] = useState<{ [id: string]: number }>(() => {
+    try {
+      const stored = localStorage.getItem("cart");
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
+  // Persist cart to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } catch {}
+  }, [cart]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -46,7 +59,7 @@ function App() {
           path="/"
           element={
             <>
-              <main className="container">
+              <main className="container-lg">
                 {loading && <div>Loading products...</div>}
                 {error && <div className="alert alert-danger">{error}</div>}
                 <div className="row">

@@ -27,7 +27,7 @@ export default function Checkout({ products, cart, onBack }: CheckoutProps) {
   );
 
   return (
-    <div className="container py-4">
+    <main className="container-lg py-4">
       <h3>Shopping Cart</h3>
       <button className="btn btn-link mb-3" onClick={onBack}>&larr; Back to Shop</button>
       {cartItems.length === 0 ? (
@@ -43,14 +43,28 @@ export default function Checkout({ products, cart, onBack }: CheckoutProps) {
             </tr>
           </thead>
           <tbody>
-            {cartItems.map((p) => (
-              <tr key={p.id}>
-                <td>{p.name}</td>
-                <td>{cart[p.id]}</td>
-                <td>${p.price.toFixed(2)}</td>
-                <td>${((cart[p.id] || 0) * p.price).toFixed(2)}</td>
-              </tr>
-            ))}
+            {cartItems.map((p) => {
+              const imgSrc = p.image_url || p.imageUrl;
+              return (
+                <tr key={p.id}>
+                  <td>
+                    <div className="d-flex flex-column align-items-center">
+                      {imgSrc && (
+                        <img
+                          src={imgSrc}
+                          alt={p.name}
+                          style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 6, marginBottom: 4 }}
+                        />
+                      )}
+                      <div>{p.name}</div>
+                    </div>
+                  </td>
+                  <td>{cart[p.id]}</td>
+                  <td>${p.price.toFixed(2)}</td>
+                  <td>${((cart[p.id] || 0) * p.price).toFixed(2)}</td>
+                </tr>
+              );
+            })}
           </tbody>
           <tfoot>
             <tr>
@@ -63,6 +77,6 @@ export default function Checkout({ products, cart, onBack }: CheckoutProps) {
       <div className="alert alert-info mt-4">
         Payment and order placement coming soon!
       </div>
-    </div>
+    </main>
   );
 }
