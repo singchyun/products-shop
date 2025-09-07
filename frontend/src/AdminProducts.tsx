@@ -8,7 +8,7 @@ import axios, { isAxiosError } from "axios";
 
 export default function AdminProducts() {
   const [showImageModal, setShowImageModal] = useState<{ url: string; alt: string } | null>(null);
-  const [showSuccess, setShowSuccess] = useState<null | string>(null);
+  const [, setShowSuccess] = useState<null | string>(null);
   const [hasToken, setHasToken] = useState<boolean | null>(null);
   const [products, setProducts] = useState<null | Array<{
     id: number;
