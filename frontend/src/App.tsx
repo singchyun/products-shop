@@ -4,38 +4,13 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-      {/* Subtle display of API base URL at the bottom of the page */}
-      <div
-        style={{
-          fontSize: "0.8em",
-          color: "#888",
-          marginTop: "3rem",
-          textAlign: "center",
-        }}
-      >
-        API Base URL: {import.meta.env.VITE_API_BASE_URL}
-      </div>
-    </>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <h2>Welcome to the Admin Module. Please login here</h2>
+      <a href="/admin/login" className="btn btn-primary" style={{ marginTop: 16 }}>
+        Go to Admin Login
+      </a>
+    </div>
   );
 }
 

@@ -54,7 +54,7 @@ function AdminLogin() {
   }
   return (
     <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
-      <h2>Admin Login</h2>
+      <h2>Admin Module: Login</h2>
       <form
         onSubmit={handleSubmit}
         style={{

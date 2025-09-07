@@ -200,7 +200,7 @@ export default function AdminProducts() {
       )}
       <div className="container" style={{ marginTop: "5rem", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2>Products</h2>
+          <h2>Admin Module: Products</h2>
           <button className="btn btn-success" onClick={openCreateForm}>
             Create Product
           </button>
