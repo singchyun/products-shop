@@ -21,6 +21,16 @@ export class ProductsService {
     return this.productRepo.findAll({ orderBy: { id: 'asc' } });
   }
 
+  async findAllEnabledAndInStock(): Promise<Product[]> {
+    return this.productRepo.find(
+      {
+        enabled: true,
+        stock_quantity: { $gt: 0 },
+      },
+      { orderBy: { id: 'asc' } },
+    );
+  }
+
   async findOne(id: number): Promise<Product> {
     const product = await this.productRepo.findOne({ id });
     if (!product) throw new NotFoundException('Product not found');

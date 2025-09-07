@@ -58,13 +58,20 @@ export class ProductsController {
   }
 }
 
+/**
+ * Public controller to allow unauthenticated access to product listings
+ * and details. This controller does not require any authentication or roles.
+ */
 @Controller('public/products')
 export class ProductsPublicController {
   constructor(private readonly productsService: ProductsService) {}
 
+  /**
+   * @returns Returns a list of all products that are enabled and still has stock.
+   */
   @Get()
-  async findAll(): Promise<Product[]> {
-    return this.productsService.findAll();
+  async findEnabledAndInStock(): Promise<Product[]> {
+    return this.productsService.findAllEnabledAndInStock();
   }
 
   @Get(':id')
