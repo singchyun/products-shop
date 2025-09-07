@@ -32,6 +32,7 @@ export default function AdminProducts() {
     price: number;
     stock_quantity: number;
     enabled: boolean;
+    image_url?: string;
   }>(null);
   function openCreateForm() {
     setFormMode("create");
@@ -333,9 +334,10 @@ export default function AdminProducts() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            overflow: "auto"
           }}
         >
-          <div style={{ background: "#fff", padding: 32, borderRadius: 8, minWidth: 320, maxWidth: 400 }}>
+          <div style={{ background: "#fff", padding: 32, borderRadius: 8, minWidth: 320, maxWidth: 400, maxHeight: '90vh', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
             <h4>{formMode === "create" ? "Create Product" : "Edit Product"}</h4>
             <form onSubmit={handleFormSubmit}>
               <div className="mb-3 text-start">
@@ -380,15 +382,29 @@ export default function AdminProducts() {
                 />
               </div>
               <div className="mb-3 text-start">
+                <label className="form-label">Image URL <span style={{ fontWeight: 400, color: '#888', fontSize: 12 }}>(optional)</span></label>
+                <input
+                  className="form-control"
+                  type="url"
+                  placeholder="https://example.com/image.jpg"
+                  value={formProduct?.image_url ?? ""}
+                  onChange={e => setFormProduct(f => f ? { ...f, image_url: e.target.value } : f)}
+                />
+              </div>
+              <div className="mb-3 text-start">
                 <label className="form-label">Enabled</label>
-                <select
-                  className="form-select"
-                  value={formProduct?.enabled ? "1" : "0"}
-                  onChange={(e) => setFormProduct((f) => (f ? { ...f, enabled: e.target.value === "1" } : f))}
-                >
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
-                </select>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="enabledCheckbox"
+                    checked={!!formProduct?.enabled}
+                    onChange={e => setFormProduct(f => f ? { ...f, enabled: e.target.checked } : f)}
+                  />
+                  <label className="form-check-label" htmlFor="enabledCheckbox">
+                    Enabled
+                  </label>
+                </div>
               </div>
               <div className="d-flex justify-content-end gap-2">
                 <button type="button" className="btn btn-secondary" onClick={closeForm}>
