@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
-type JwtPayload = { email?: string; [key: string]: any };
+type JwtPayload = { email?: string };
 
 export default function AdminProducts() {
   const [showImageModal, setShowImageModal] = useState<{ url: string; alt: string } | null>(null);
@@ -40,7 +40,15 @@ export default function AdminProducts() {
     setShowForm(true);
   }
 
-  function openEditForm(product: any) {
+  function openEditForm(product: {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    stock_quantity: number;
+    enabled: boolean;
+    image_url?: string;
+  }) {
     setFormMode("edit");
     setFormProduct({ ...product });
     setShowForm(true);
@@ -77,9 +85,10 @@ export default function AdminProducts() {
         showSuccessModal("Product updated successfully!");
       }
       closeForm();
-    } catch (err: any) {
+    } catch (e) {
+      const err = e as Error;
       let message = "Unknown error";
-      if (err.response && err.response.data && err.response.data.message) {
+      if (isAxiosError(err) && err.response && err.response.data && err.response.data.message) {
         message = err.response.data.message;
       } else if (err.message) {
         message = err.message;
@@ -160,9 +169,10 @@ export default function AdminProducts() {
       });
       setProducts((prev) => (prev ? prev.filter((p) => p.id !== id) : prev));
       showSuccessModal("Product deleted successfully!");
-    } catch (err: any) {
+    } catch (e) {
+      const err = e as Error;
       let message = "Unknown error";
-      if (err.response && err.response.data && err.response.data.message) {
+      if (isAxiosError(err) && err.response && err.response.data && err.response.data.message) {
         message = err.response.data.message;
       } else if (err.message) {
         message = err.message;
@@ -246,51 +256,23 @@ export default function AdminProducts() {
                     {p.image_url ? (
                       <a
                         href="#"
-                        onClick={e => {
+                        onClick={(e) => {
                           e.preventDefault();
                           setShowImageModal({ url: p.image_url!, alt: p.name });
                         }}
                         tabIndex={0}
                         aria-label={`View image for ${p.name}`}
                       >
-                        <img src={p.image_url} alt={p.name} style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 4, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }} />
+                        <img
+                          src={p.image_url}
+                          alt={p.name}
+                          style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+                        />
                       </a>
                     ) : (
                       <div style={{ width: 48, height: 48, background: "#eee", borderRadius: 4 }} />
                     )}
                   </td>
-      {/* Image Modal */}
-      {showImageModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.7)",
-            zIndex: 4000,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={() => setShowImageModal(null)}
-        >
-          <img
-            src={showImageModal.url}
-            alt={showImageModal.alt}
-            style={{
-              maxWidth: '90vw',
-              maxHeight: '80vh',
-              borderRadius: 8,
-              background: '#fff',
-              boxShadow: '0 2px 24px rgba(0,0,0,0.25)',
-              padding: 8,
-            }}
-            onClick={e => e.stopPropagation()}
-          />
-        </div>
-      )}
                   <td>
                     <a
                       href="#"
@@ -319,6 +301,38 @@ export default function AdminProducts() {
         ) : (
           !error && <p>No products found.</p>
         )}
+        {/* Image Modal (moved outside table) */}
+        {showImageModal && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              background: "rgba(0,0,0,0.7)",
+              zIndex: 4000,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onClick={() => setShowImageModal(null)}
+          >
+            <img
+              src={showImageModal.url}
+              alt={showImageModal.alt}
+              style={{
+                maxWidth: "90vw",
+                maxHeight: "80vh",
+                borderRadius: 8,
+                background: "#fff",
+                boxShadow: "0 2px 24px rgba(0,0,0,0.25)",
+                padding: 8,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
       </div>
       {/* Modal Form for Create/Edit */}
       {showForm && (
@@ -334,10 +348,22 @@ export default function AdminProducts() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            overflow: "auto"
+            overflow: "auto",
           }}
         >
-          <div style={{ background: "#fff", padding: 32, borderRadius: 8, minWidth: 320, maxWidth: 400, maxHeight: '90vh', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              background: "#fff",
+              padding: 32,
+              borderRadius: 8,
+              minWidth: 320,
+              maxWidth: 400,
+              maxHeight: "90vh",
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <h4>{formMode === "create" ? "Create Product" : "Edit Product"}</h4>
             <form onSubmit={handleFormSubmit}>
               <div className="mb-3 text-start">
@@ -382,13 +408,15 @@ export default function AdminProducts() {
                 />
               </div>
               <div className="mb-3 text-start">
-                <label className="form-label">Image URL <span style={{ fontWeight: 400, color: '#888', fontSize: 12 }}>(optional)</span></label>
+                <label className="form-label">
+                  Image URL <span style={{ fontWeight: 400, color: "#888", fontSize: 12 }}>(optional)</span>
+                </label>
                 <input
                   className="form-control"
                   type="url"
                   placeholder=""
                   value={formProduct?.image_url ?? ""}
-                  onChange={e => setFormProduct(f => f ? { ...f, image_url: e.target.value } : f)}
+                  onChange={(e) => setFormProduct((f) => (f ? { ...f, image_url: e.target.value } : f))}
                 />
               </div>
               <div className="mb-3 text-start">
@@ -398,7 +426,7 @@ export default function AdminProducts() {
                     type="checkbox"
                     id="enabledCheckbox"
                     checked={!!formProduct?.enabled}
-                    onChange={e => setFormProduct(f => f ? { ...f, enabled: e.target.checked } : f)}
+                    onChange={(e) => setFormProduct((f) => (f ? { ...f, enabled: e.target.checked } : f))}
                   />
                   <label className="form-check-label" htmlFor="enabledCheckbox">
                     Enabled on shop front
