@@ -1,8 +1,0 @@
-###
-POST https://events-test.yirehweb.com/auth/login
-Content-Type: application/json
-
-{
-  "email": "alice.smith@example.com",
-  "password": "qweqweqwe1"
-}
