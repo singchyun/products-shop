@@ -15,34 +15,33 @@ import { Roles } from '../auth/roles.decorator';
 import { ProductsService } from './products.service';
 import { Product } from './product.entity';
 
+/**
+ * Private controller to manage products. This controller is protected by JWT authentication
+ * and role-based access control, allowing only users with the 'admin' role to perform
+ * create, read, update, and delete operations on products.
+ */
 @Controller('private/products')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
   async create(@Body() data: Omit<Product, 'id'>): Promise<Product> {
     return this.productsService.create(data);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
   async findAll(): Promise<Product[]> {
     return this.productsService.findAll();
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productsService.findOne(id);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: Partial<Omit<Product, 'id'>>,
@@ -51,8 +50,6 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.productsService.remove(id);
   }
@@ -74,8 +71,13 @@ export class ProductsPublicController {
     return this.productsService.findAllEnabledAndInStock();
   }
 
+  /**
+   * @returns Returns a product that is enabled and still has stock.
+   */
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Product> {
-    return this.productsService.findOne(id);
+    // It is important to use the method that checks for enabled and in-stock status.
+    // Do not use the regular findOne() method here.
+    return this.productsService.findOneEnabledAndInStock(id);
   }
 }

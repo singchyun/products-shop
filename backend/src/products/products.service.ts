@@ -37,6 +37,16 @@ export class ProductsService {
     return product;
   }
 
+  async findOneEnabledAndInStock(id: number): Promise<Product> {
+    const product = await this.productRepo.findOne({
+      id,
+      enabled: true,
+      stock_quantity: { $gt: 0 },
+    });
+    if (!product) throw new NotFoundException('Product not found');
+    return product;
+  }
+
   async update(
     id: number,
     data: Partial<Omit<Product, 'id'>>,
