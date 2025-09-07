@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import api from "./api";
 import Checkout from "./Checkout";
@@ -43,8 +43,13 @@ function App() {
       .finally(() => setLoading(false));
   }, []);
 
+  const [cartFlash, setCartFlash] = useState(false);
+  const cartFlashTimeout = useRef<NodeJS.Timeout | null>(null);
   const addToCart = (id: string) => {
     setCart((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+    setCartFlash(true);
+    if (cartFlashTimeout.current) clearTimeout(cartFlashTimeout.current);
+    cartFlashTimeout.current = setTimeout(() => setCartFlash(false), 400);
   };
 
   const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
@@ -112,7 +117,10 @@ function App() {
                   alignItems: "center",
                   justifyContent: "center",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                  cursor: "pointer"
+                  cursor: "pointer",
+                  transition: "box-shadow 0.2s, border-color 0.2s",
+                  boxShadow: cartFlash ? "0 0 0 6px #51cf66, 0 2px 8px rgba(0,0,0,0.08)" : "0 2px 8px rgba(0,0,0,0.08)",
+                  borderColor: cartFlash ? "#51cf66" : "#ddd"
                 }}
               >
                 <span style={{ position: "absolute", top: 8, right: 8, background: "#dc3545", color: "#fff", borderRadius: "50%", fontSize: 12, width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>
