@@ -1,3 +1,15 @@
+create table "admin" (
+  "id" serial primary key,
+  "name" varchar(255) not null,
+  "email" varchar(255) null,
+  "enabled" boolean not null default true,
+  "last_login" date,
+  "password" varchar(255) not null,
+  "roles" text[] not null default '{}'::text[]
+);
+
+INSERT INTO admin (name, email, enabled, password, roles) VALUES ('Admin User', 'someone@acme.com', true, '$2b$05$ezk3wclE5SiyhR.i5eSkCOfv7n7br/6PV.3sZwifn.ujwElV4tPbq', '{"admin"}'); 
+
 create table "product" (
   "id" serial primary key,
   "name" varchar(255) not null,
