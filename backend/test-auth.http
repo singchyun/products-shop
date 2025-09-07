@@ -1,5 +1,5 @@
 ###
-POST http://localhost:3000/auth/login
+POST https://events-test.yirehweb.com/auth/login
 Content-Type: application/json
 
 {

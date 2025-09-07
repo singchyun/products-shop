@@ -1,2 +1,2 @@
 ###
-GET http://localhost:3000/public/products
+GET https://events-test.yirehweb.com/public/products
