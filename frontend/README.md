@@ -23,7 +23,7 @@ You should already have the backend up and running. If not, please go back to [S
 5. (optional) Edit [./package.json](./package.json) to change the default running port `4168`.
 6. Run `npm run start`
 7. In your browser, browse to [http://localhost:4168](http://localhost:4168)
-   - You should be able to follow the link to login using the email **someone@acme.com**. The password would have made available in the slides deck. If not, please feel free to ask for it from lee@yireh.sg.
+   - You should be able to follow the link to login using the email **someone@acme.com**. The password would have made available in page 7 of the slides. If not, please feel free to ask for it from lee@yireh.sg.
 
 ## Next Steps
 
