@@ -17,11 +17,12 @@ You should already have an instance of PostgreSQL running.
 ## Installation
 
 1. Clone this Github repo locally.
-2. Rename the file [./.env.sample](./.env.sample) to **.env**, and edit the database credentials in it accordingly.
-3. Login to your PostgreSQL database and run the DDL file [./database-schema.sql](./database-schema.sql).
-4. Run `npm install`
-5. Run `npm run start:dev`
-6. Run `curl http://localhost:3000/public/products`
+2. `cd backend`
+3. Rename the file [./.env.sample](./.env.sample) to **.env**, and edit the database credentials in it accordingly.
+4. Login to your PostgreSQL database and run the DDL file [./database-schema.sql](./database-schema.sql).
+5. Run `npm install`
+6. Run `npm run start:dev`
+7. Run `curl http://localhost:3000/public/products`
    - You should be able to see a list of products returned. 
 
 ## Next Steps

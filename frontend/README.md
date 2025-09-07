@@ -1,69 +1,32 @@
-# React + TypeScript + Vite
+# Step 2 of 3: *Admin* Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the *Admin* Frontend code repository.
 
-Currently, two official plugins are available:
+## Description
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<p>
+<img src="https://myshopproductsimages.s3.ap-southeast-1.amazonaws.com/archi-frontend-admin.png" />
+</p>
 
-## Expanding the ESLint configuration
+This admin frontend is built on React with Bootstrap. 
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Prerequisites
 
-```js
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+You should already have the backend up and running. If not, please go back to [Step 1: Backend](../backend/).
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+1. Clone this Github repo locally (which should have been done when installing the backend).
+2. `cd frontend`
+3. Edit [./.env.development](./.env.development) to verify the backend base URL is correct (usally `http://localhost:3000`).
+4. Run `npm install`
+5. (optional) Edit [./package.json](./package.json) to change the default running port `4168`.
+6. Run `npm run start`
+7. In your browser, browse to [http://localhost:4168](http://localhost:4168)
+   - You should be able to follow the link to login using the email **someone@acme.com**. The password would have made available in the slides deck. Otherwise, please feel free to ask for it from lee@yireh.sg.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Next Steps
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+Congratulations on setting up the *admin* frontend successfully! 
 
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+You may proceed to [Step 3: Shopfront Frontend](../frontend-shop/)
