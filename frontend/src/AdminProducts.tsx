@@ -261,57 +261,66 @@ export default function AdminProducts() {
                     p.name.toLowerCase().includes(search.toLowerCase()) ||
                     p.description.toLowerCase().includes(search.toLowerCase()),
                 )
-                .map((p) => (
-                  <tr key={p.id}>
-                    <td>{p.id}</td>
-                    <td style={{ textAlign: "left" }}>
-                      {p.image_url ? (
+                .map((p) => {
+                  const strike = !p.enabled || p.stock_quantity <= 0 ? { opacity: 0.3 } : {};
+                  return (
+                    <tr key={p.id}>
+                      <td style={strike}>{p.id}</td>
+                      <td style={{ ...strike, textAlign: "left" }}>
+                        {p.image_url ? (
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setShowImageModal({ url: p.image_url!, alt: p.name });
+                            }}
+                            tabIndex={0}
+                            aria-label={`View image for ${p.name}`}
+                          >
+                            <img
+                              src={p.image_url}
+                              alt={p.name}
+                              style={{
+                                width: 48,
+                                height: 48,
+                                objectFit: "cover",
+                                borderRadius: 4,
+                                boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                              }}
+                            />
+                          </a>
+                        ) : (
+                          <div style={{ width: 48, height: 48, background: "#eee", borderRadius: 4 }} />
+                        )}
+                      </td>
+                      <td style={strike}>
                         <a
                           href="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            setShowImageModal({ url: p.image_url!, alt: p.name });
+                            openEditForm(p);
                           }}
-                          tabIndex={0}
-                          aria-label={`View image for ${p.name}`}
+                          style={{ textDecoration: "underline", color: "#0d6efd", cursor: "pointer" }}
                         >
-                          <img
-                            src={p.image_url}
-                            alt={p.name}
-                            style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
-                          />
+                          {p.name}
                         </a>
-                      ) : (
-                        <div style={{ width: 48, height: 48, background: "#eee", borderRadius: 4 }} />
-                      )}
-                    </td>
-                    <td>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          openEditForm(p);
-                        }}
-                        style={{ textDecoration: "underline", color: "#0d6efd", cursor: "pointer" }}
-                      >
-                        {p.name}
-                      </a>
-                    </td>
-                    <td className="d-none d-md-table-cell" style={{ textAlign: "left" }}>
-                      {p.description}
-                    </td>
-                    <td style={{ textAlign: "right" }}>${p.price.toFixed(2)}</td>
-                    <td style={{ textAlign: "right" }}>
-                      {p.stock_quantity < 50 ? <span className="text-danger">{p.stock_quantity} (low)</span> : p.stock_quantity}
-                    </td>
-                    <td>{p.enabled ? "✔️" : "❌"}</td>
-                    <td style={{ minWidth: 120 }}>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="d-none d-md-table-cell" style={{ ...strike, textAlign: "left" }}>
+                        {p.description}
+                      </td>
+                      <td style={{ ...strike, textAlign: "right" }}>${p.price.toFixed(2)}</td>
+                      <td style={{ ...strike, textAlign: "right" }}>
+                        {p.stock_quantity < 50 ? <span className="text-danger">{p.stock_quantity} (low)</span> : p.stock_quantity}
+                      </td>
+                      <td>{p.enabled ? "✔️" : "❌"}</td>
+                      <td>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         ) : (
