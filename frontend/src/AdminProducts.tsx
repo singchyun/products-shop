@@ -7,6 +7,7 @@ import axios, { isAxiosError } from "axios";
 type JwtPayload = { email?: string };
 
 export default function AdminProducts() {
+  const [search, setSearch] = useState("");
   const [showImageModal, setShowImageModal] = useState<{ url: string; alt: string } | null>(null);
   const [showSuccess, setShowSuccess] = useState<null | string>(null);
   const [hasToken, setHasToken] = useState<boolean | null>(null);
@@ -75,7 +76,7 @@ export default function AdminProducts() {
         const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/private/products`, formProduct, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setProducts((prev) => (prev ? [res.data, ...prev] : [res.data]));
+        setProducts((prev) => (prev ? [...prev, res.data] : [res.data]));
         showSuccessModal("Product created successfully!");
       } else if (formMode === "edit" && formProduct.id) {
         const res = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/private/products/${formProduct.id}`, formProduct, {
@@ -234,6 +235,39 @@ export default function AdminProducts() {
           </button>
         </div>
         {error && <div style={{ color: "red", marginBottom: 16 }}>{error}</div>}
+        {/* Quick Search Field */}
+  <div style={{ maxWidth: 340, margin: '16px 0 0 0', position: 'relative', textAlign: 'left' }}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Quick search by name or description..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ paddingRight: 32 }}
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              style={{
+                position: 'absolute',
+                right: 8,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                border: 'none',
+                background: 'transparent',
+                fontSize: 18,
+                color: '#888',
+                cursor: 'pointer',
+                padding: 0,
+                lineHeight: 1
+              }}
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
         {products && products.length > 0 ? (
           <table className="table table-bordered table-striped mt-4">
             <thead>
@@ -249,10 +283,16 @@ export default function AdminProducts() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => (
+              {products
+                .filter(p =>
+                  search.trim() === "" ||
+                  p.name.toLowerCase().includes(search.toLowerCase()) ||
+                  p.description.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((p) => (
                 <tr key={p.id}>
                   <td>{p.id}</td>
-                  <td>
+                  <td style={{ textAlign: 'left' }}>
                     {p.image_url ? (
                       <a
                         href="#"
@@ -285,9 +325,15 @@ export default function AdminProducts() {
                       {p.name}
                     </a>
                   </td>
-                  <td className="d-none d-md-table-cell">{p.description}</td>
-                  <td>${p.price.toFixed(2)}</td>
-                  <td>{p.stock_quantity}</td>
+                  <td className="d-none d-md-table-cell" style={{ textAlign: 'left' }}>{p.description}</td>
+                  <td style={{ textAlign: 'right' }}>${p.price.toFixed(2)}</td>
+                  <td style={{ textAlign: 'right' }}>
+                    {p.stock_quantity < 50 ? (
+                      <span className="text-danger">{p.stock_quantity} (low)</span>
+                    ) : (
+                      p.stock_quantity
+                    )}
+                  </td>
                   <td>{p.enabled ? "✔️" : "❌"}</td>
                   <td style={{ minWidth: 120 }}>
                     <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
