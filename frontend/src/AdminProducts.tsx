@@ -112,12 +112,14 @@ export default function AdminProducts() {
         const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/private/products`, formProduct, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // Push the new product to the bottom of the products list.
         setProducts((prev) => (prev ? [...prev, res.data] : [res.data]));
         showSuccessModal("Product created successfully!");
       } else if (formMode === "edit" && formProduct.id) {
         const res = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/private/products/${formProduct.id}`, formProduct, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // Update the product in-place in the products list.
         setProducts((prev) => (prev ? prev.map((p) => (p.id === formProduct.id ? res.data : p)) : prev));
         showSuccessModal("Product updated successfully!");
       }
@@ -153,6 +155,7 @@ export default function AdminProducts() {
       await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/private/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      // Remove the product from the products list.
       setProducts((prev) => (prev ? prev.filter((p) => p.id !== id) : prev));
       showSuccessModal("Product deleted successfully!");
     } catch (e) {
